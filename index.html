@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restoran Giken — Modern Dining Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="badge">✨ OOP Architecture • 4 Languages Stack</span>
+            <h1>Restoran Giken</h1>
+            <div class="typewriter-box">
+                <span id="typewriter-text"></span><span class="cursor"></span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Developer: M. Irgi Ardiyansyah (NIM: 14012500109)</p>
+        </div>
+
+        {% if error %}
+            <div class="alert-error">⚠️ {{ error }}</div>
+        {% endif %}
+
+        <h3>📋 Katalog Menu Spesial</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Menu</th>
+                        <th>Kategori</th>
+                        <th>Harga</th>
+                        <th>Stok</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in daftar_menu %}
+                    <tr>
+                        <td><span class="kode-pill">{{ m.kode }}</span></td>
+                        <td><strong>{{ m.nama }}</strong></td>
+                        <td style="color: var(--text-muted);">{{ m.kategori() }}</td>
+                        <td>{{ m.format_rp(m.harga) }}</td>
+                        <td>{{ m.stok }} porsi</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-card">
+            <h3>🛒 Buat Pesanan Baru</h3>
+            <form method="POST">
+                <div class="grid-form">
+                    <div>
+                        <label>Nama Pelanggan</label>
+                        <input type="text" name="nama" placeholder="Contoh: M. Irgi Ardiyansyah" required>
+                    </div>
+                    <div>
+                        <label>Nomor Meja</label>
+                        <input type="number" name="meja" value="1" min="1" max="50" required>
+                    </div>
+                    <div>
+                        <label>Membership</label>
+                        <select name="status">
+                            <option value="umum">Pelanggan Umum (0% Diskon)</option>
+                            <option value="vip">Member VIP Giken (15% Diskon)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Jumlah Porsi</label>
+                        <input type="number" name="porsi" value="1" min="1" required>
+                    </div>
+                    <div class="full-width">
+                        <label>Pilih Menu Hidangan</label>
+                        <select name="kode_menu">
+                            {% for m in daftar_menu %}
+                            <option value="{{ m.kode }}">{{ m.nama }} — {{ m.format_rp(m.harga) }} (Sisa: {{ m.stok }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button type="submit">Proses Pesanan Sekarang →</button>
+            </form>
+        </div>
+
+        {% if struk %}
+        <div class="struk-card">
+            <div class="struk-header">
+                <div>
+                    <h4 style="font-size: 1.1rem;">🧾 Digital Receipt</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">{{ struk.pelanggan }} ({{ struk.status }}) • Meja #{{ struk.meja }}</p>
+                </div>
+                <span class="badge" style="margin:0;">LUNAS</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Item: <strong style="color: white;">{{ struk.item }}</strong> ({{ struk.porsi }} porsi)</p>
+            <div class="total-box">
+                <span style="color: var(--text-muted); font-weight: 600;">Total Pembayaran</span>
+                <span class="total-price">{{ struk.total }}</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
